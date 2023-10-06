@@ -46,85 +46,6 @@
                     <h2></h2>
                     <pre>
                         <code class="python">
-                            from machine import UART
-                            from machine import Pin
-                            import time
-                            
-                            usart_flag=0
-                            
-                            led = Pin(4, Pin.OUT)
-                            button = Pin(13, Pin.IN,Pin.PULL_UP)
-                            activeBuzzer=Pin(12,Pin.OUT)
-                            activeBuzzer.value(0)
-                            led.value(0)
-                            
-                            myUsart = UART(1, baudrate=115200, bits=8, parity=0, rx=19, tx=34, timeout=10) 
-                            
-                            
-                            while True:
-                                if not button.value():
-                                    myUsart.write(str("A"))
-                                if myUsart.any():
-                                    #usart_buffer=myUsart.read()
-                                    usart_flag=1
-                                if usart_flag==1:
-                                    usart_flag=0
-                                    x=0
-                                    while x LESS THAN 6:
-                                        led.value(not led.value())
-                                        x=(x+1)
-                                        time.sleep_ms(500)
-                                    activeBuzzer.value(1)
-                                    time.sleep_ms(1000)
-                                    activeBuzzer.value(0)
-                                    print("hello")
-                            
-                                time.sleep_ms(100)
-                                
-                            
-                        </code>
-                    </pre>
-                </section>
-            </main>
-        </ul>
-        <ul class="instructions">
-            Q2. This project needs two ESP32s. You need to work with a partner (classmate). Each ESP32 needs a
-            push button, LEDs, and a buzzer, (and other necessary electronic components). Design and construct a
-            circuit for each ESP32 so that the two ESP32s do serial communication using UARTs. When a
-            pushbutton is pressed from one ESP32 (A), the other ESP32 (B) responds by blinking LEDs and
-            playing some sound. When a pushbutton is pressed from the other ESP32 (B), ESP32 (A) responds by
-            blinking LEDs (a different pattern from the LEDS on ESP32 (B)) and playing some other sound. 
-        </ul>
-        <ul class="parts">
-            Parts: 
-            <li>
-                <ol> - ESP32: 2</ol>
-                <ol> - Wires: 22</ol>
-                <ol> - 220 Ohm resistors: 2 </ol>
-                <ol> - 10K Ohm resistors: 4 </ol>
-                <ol> - 1K Ohm resistors: 2 </ol>
-                <ol> - Buttons: 2 </ol>
-                <ol> - LED: 2 </ol>
-                <ol> - NPN Transistor: 2 </ol>
-
-
-            </li>
-        </ul>
-        <ul class="image">
-            <img style="height:300px; width:auto;" src="set2.png"> 
-            <video width="auto" height="300px" controls> 
-                <source src="A3.2.mp4" type="video/mp4">
-            </video>
-        </ul>
-        <ul class="image">
-            <img style="height:300px; width:auto;" src="image2.jpg"> 
-        </ul>
-        <ul>
-            <main>
-                <section class="code">
-                    <h2></h2>
-                    <pre>
-                        <code class="python">
                             B0  = 31   # B
                             # Octave 1 ********************
                             C1  = 33   # C
@@ -295,6 +216,93 @@
                                         movement = "on"
 
                         </code>
+                    </pre>
+                </section>
+            </main>
+        </ul>
+        <ul class="instructions">
+            Q2. This project needs two ESP32s. You need to work with a partner (classmate). Each ESP32 needs a
+            push button, LEDs, and a buzzer, (and other necessary electronic components). Design and construct a
+            circuit for each ESP32 so that the two ESP32s do serial communication using UARTs. When a
+            pushbutton is pressed from one ESP32 (A), the other ESP32 (B) responds by blinking LEDs and
+            playing some sound. When a pushbutton is pressed from the other ESP32 (B), ESP32 (A) responds by
+            blinking LEDs (a different pattern from the LEDS on ESP32 (B)) and playing some other sound. 
+        </ul>
+        <ul class="parts">
+            Parts: 
+            <li>
+                <ol> - ESP32: 2</ol>
+                <ol> - Wires: 22</ol>
+                <ol> - 220 Ohm resistors: 2 </ol>
+                <ol> - 10K Ohm resistors: 4 </ol>
+                <ol> - 1K Ohm resistors: 2 </ol>
+                <ol> - Buttons: 2 </ol>
+                <ol> - LED: 2 </ol>
+                <ol> - NPN Transistor: 2 </ol>
+
+
+            </li>
+        </ul>
+        <ul class="image">
+            <img style="height:300px; width:auto;" src="set2.png"> 
+            <video width="auto" height="300px" controls> 
+                <source src="A3.2.mp4" type="video/mp4">
+            </video>
+        </ul>
+        <ul class="image">
+            <img style="height:300px; width:auto;" src="image2.jpg"> 
+        </ul>
+        <ul>
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        
+                        <main>
+                            <section class="code">
+                                <h2></h2>
+                                <pre>
+                                    <code class="python">
+                                        from machine import UART
+                                        from machine import Pin
+                                        import time
+                                        
+                                        usart_flag=0
+                                        
+                                        led = Pin(4, Pin.OUT)
+                                        button = Pin(13, Pin.IN,Pin.PULL_UP)
+                                        activeBuzzer=Pin(12,Pin.OUT)
+                                        activeBuzzer.value(0)
+                                        led.value(0)
+                                        
+                                        myUsart = UART(1, baudrate=115200, bits=8, parity=0, rx=19, tx=34, timeout=10) 
+                                        
+                                        
+                                        while True:
+                                            if not button.value():
+                                                myUsart.write(str("A"))
+                                            if myUsart.any():
+                                                #usart_buffer=myUsart.read()
+                                                usart_flag=1
+                                            if usart_flag==1:
+                                                usart_flag=0
+                                                x=0
+                                                while x LESS THAN 6:
+                                                    led.value(not led.value())
+                                                    x=(x+1)
+                                                    time.sleep_ms(500)
+                                                activeBuzzer.value(1)
+                                                time.sleep_ms(1000)
+                                                activeBuzzer.value(0)
+                                                print("hello")
+                                        
+                                            time.sleep_ms(100)
+                                            
+                                        
+                                    </code>
+                                </pre>
+                            </section>
+                        </main>
                     </pre>
                 </section>
             </main>
