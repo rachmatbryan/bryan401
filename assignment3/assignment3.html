@@ -189,7 +189,7 @@
                                 E4, D4, C4, D4, E4, E4, E4,
                                 E4, D4, D4, E4, D4, C4
                             ]
-
+ 
                             row = [
                                 C4, C4, C4, D4, E4, E4, D4,
                                 E4, F4, G4, G4, F4, E4, D4,
@@ -253,59 +253,53 @@
             <img style="height:300px; width:auto;" src="image2.jpg"> 
         </ul>
         <ul>
+            
             <main>
                 <section class="code">
                     <h2></h2>
                     <pre>
-                        
-                        <main>
-                            <section class="code">
-                                <h2></h2>
-                                <pre>
-                                    <code class="python">
-                                        from machine import UART
-                                        from machine import Pin
-                                        import time
-                                        
-                                        usart_flag=0
-                                        
-                                        led = Pin(4, Pin.OUT)
-                                        button = Pin(13, Pin.IN,Pin.PULL_UP)
-                                        activeBuzzer=Pin(12,Pin.OUT)
-                                        activeBuzzer.value(0)
-                                        led.value(0)
-                                        
-                                        myUsart = UART(1, baudrate=115200, bits=8, parity=0, rx=19, tx=34, timeout=10) 
-                                        
-                                        
-                                        while True:
-                                            if not button.value():
-                                                myUsart.write(str("A"))
-                                            if myUsart.any():
-                                                #usart_buffer=myUsart.read()
-                                                usart_flag=1
-                                            if usart_flag==1:
-                                                usart_flag=0
-                                                x=0
-                                                while x LESS THAN 6:
-                                                    led.value(not led.value())
-                                                    x=(x+1)
-                                                    time.sleep_ms(500)
-                                                activeBuzzer.value(1)
-                                                time.sleep_ms(1000)
-                                                activeBuzzer.value(0)
-                                                print("hello")
-                                        
-                                            time.sleep_ms(100)
-                                            
-                                        
-                                    </code>
-                                </pre>
-                            </section>
-                        </main>
+                        <code class="python">
+                            from machine import UART
+                            from machine import Pin
+                            import time
+                            
+                            usart_flag=0
+                            
+                            led = Pin(4, Pin.OUT)
+                            button = Pin(13, Pin.IN,Pin.PULL_UP)
+                            activeBuzzer=Pin(12,Pin.OUT)
+                            activeBuzzer.value(0)
+                            led.value(0)
+                            
+                            myUsart = UART(1, baudrate=115200, bits=8, parity=0, rx=19, tx=34, timeout=10) 
+                            
+                            
+                            while True:
+                                if not button.value():
+                                    myUsart.write(str("A"))
+                                if myUsart.any():
+                                    #usart_buffer=myUsart.read()
+                                    usart_flag=1
+                                if usart_flag==1:
+                                    usart_flag=0
+                                    x=0
+                                    while x LESS THAN 6:
+                                        led.value(not led.value())
+                                        x=(x+1)
+                                        time.sleep_ms(500)
+                                    activeBuzzer.value(1)
+                                    time.sleep_ms(1000)
+                                    activeBuzzer.value(0)
+                                    print("hello")
+                            
+                                time.sleep_ms(100)
+                                
+                            
+                        </code>
                     </pre>
                 </section>
             </main>
+                    
         </ul>
     </li>
     
