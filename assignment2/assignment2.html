@@ -37,7 +37,80 @@
         <ul class="image">
             <img style="height:300px; width:auto;" src="image1.png"> 
         </ul>
-        <ul class="code">
+        <ul>
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            import time
+                            from machine import Pin
+
+                                
+                            button = Pin(13, Pin.IN,Pin.PULL_UP)
+                            button2 = Pin(12, Pin.IN,Pin.PULL_UP)
+
+                            movement="none"
+
+                            def reverseGPIO():
+                                from machine import Pin,PWM
+                                from pwm import myPWM
+                                import time
+
+                                mypwm = myPWM(15,2,0,4,5,18,19,21)
+                                chns=[0,1,2,3,4,5,6,7];
+                                dutys=[0,0,0,0,0,0,0,0,1023,512,256,128,64,32,16,8,0,0,0,0,0,0,0,0];
+                                delayTimes=50
+
+                                try:
+                                    
+                                    for i in range(0,16):
+                                        for j in range(0,8):
+                                            mypwm.ledcWrite(chns[j],dutys[i+j])
+                                        time.sleep_ms(delayTimes)
+                                        
+                                
+                                except:
+                                    mypwm.deinit()
+
+                            def GPIO():
+                                from machine import Pin,PWM
+                                from pwm import myPWM
+                                import time
+
+                                mypwm = myPWM(15,2,0,4,5,18,19,21)
+                                chns=[0,1,2,3,4,5,6,7];
+                                dutys=[0,0,0,0,0,0,0,0,1023,512,256,128,64,32,16,8,0,0,0,0,0,0,0,0];
+                                delayTimes=50
+
+                                try:
+                                        
+                                    for i in range(0,16):
+                                        for j in range(0,8):
+                                            mypwm.ledcWrite(chns[7-j],dutys[i+j])
+                                        time.sleep_ms(delayTimes)
+                                except:
+                                    mypwm.deinit()
+
+                            while True:
+                                if movement == "none":
+                                    if not button.value():
+                                        movement = "right"
+
+                                elif movement == "right":
+                                    GPIO()
+                                    if not button2.value():
+                                        movement = "left"
+
+                                elif movement == "left":
+                                    reverseGPIO()
+                                    if not button.value():
+                                        movement = "right"
+
+                        </code>
+                    </pre>
+                </section>
+            </main>
         </ul>
         <ul class="instructions">
             Q2. Design and construct a circuit that includes a push button, an RGB LED,
@@ -64,7 +137,73 @@
         <ul class="image">
             <img style="height:300px; width:auto;" src="image2.png"> 
         </ul>
-        <ul class="code">
+        <ul>
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            from machine import Pin,PWM
+
+                            pins=[15,2,0]
+                            pwm0=PWM(Pin(pins[0]),10000)
+                            pwm1=PWM(Pin(pins[1]),10000)
+                            pwm2=PWM(Pin(pins[2]),10000)
+                            count=0
+                            def setColor(r,g,b):
+                                pwm0.duty(1023-r)
+                                pwm1.duty(1023-g)
+                                pwm2.duty(1023-b)
+                                
+                            button = Pin(13, Pin.IN,Pin.PULL_UP)
+                            
+                            def red():
+                                setColor(255,0,0)
+                                
+                            def orange():
+                                setColor(255,165,0)
+                            
+                            def yellow():
+                                setColor(255,255,0)
+                                
+                            def green():
+                                setColor(0,128,0)
+                                
+                            def blue():
+                                setColor(0,0,255)
+                                
+                            def indigo():
+                                setColor(75,0,130)
+                                
+                            def violet():
+                                setColor(148,0,211)
+                                
+                            
+                            def reverseGPIO():
+                                if count == 1:
+                                    red()
+                                if count == 2:
+                                    orange()
+                                if count == 3:
+                                    yellow()
+                                if count == 4:
+                                    green()
+                                if count == 5:
+                                    blue()
+                                if count == 6:
+                                    indigo()
+                                if count == 7:
+                                    violet()
+                                count=count+1
+                                
+                            while True:
+                              if not button.value():
+                                    reverseGPIO()
+                            
+                        </code>
+                    </pre>
+                </section>
+            </main>
         </ul>
     </li>
     

@@ -33,7 +33,39 @@
         </ul>
         <ul class="image">
         </ul>
-        <ul class="code">
+        <ul>
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            from time import sleep_ms
+                            from machine import Pin
+
+                            led1=Pin(2,Pin.OUT) #create LED object from pin2,Set Pin2 to output
+                            led2=Pin(15,Pin.OUT) #create LED object from pin2,Set Pin2 to output
+                            led3=Pin(13,Pin.OUT) #create LED object from pin2,Set Pin2 to output
+                            try:
+                                while True:
+                                    led1.value(1)        #Set led turn on
+                                    sleep_ms(1000)
+                                    led1.value(0)        #Set led turn off
+                                    sleep_ms(1000)
+                                led2.value(1)        #Set led turn on
+                                    sleep_ms(1000)
+                                    led2.value(0)        #Set led turn off
+                                    sleep_ms(1000)	
+                                led3.value(1)        #Set led turn on
+                                    sleep_ms(1000)
+                                    led3.value(0)        #Set led turn off
+                                    sleep_ms(1000)	
+                            except:
+                                pass
+
+                        </code>
+                    </pre>
+                </section>
+            </main>
         </ul>
         <ul class="instructions">
             Q2. Design and construct a circuit that includes two push buttons and an LED. When one button is pushed, the LED is on while the other button is pushed, the LED is off. 
@@ -57,7 +89,48 @@
         </ul>
         <ul class="image">
         </ul>
-        <ul class="code">
+        <ul>
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            import time
+                            from machine import Pin
+                            
+                            led = Pin(2, Pin.OUT)        
+                            button = Pin(13, Pin.IN,Pin.PULL_UP)
+                            button2 = Pin(12, Pin.IN,Pin.PULL_UP)
+                            
+                            def reverseGPIO():
+                                if led.value(0):
+                                    led.value(1)
+                               
+                                    
+                            def GPIO():
+                                if led.value(1):
+                                    led.value(0)
+                            
+                            while True:
+                              if not button.value():
+                                  time.sleep_ms(20)
+                                  if not button.value():
+                                      reverseGPIO()
+                                      while not button.value():
+                                          time.sleep_ms(20)      
+                              if not button2.value():
+                                  time.sleep_ms(20)
+                                  if not button2.value():
+                                      GPIO()
+                                      while not button2.value():
+                                          time.sleep_ms(20)
+                                          
+                            
+                            
+                        </code>
+                    </pre>
+                </section>
+            </main>
         </ul>
     </li>
     

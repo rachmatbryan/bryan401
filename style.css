@@ -13,6 +13,8 @@
 }
 body{
     background-color: #3c4b5e;
+    margin-left:125px;
+    margin-right:125px;
 }
 
 h1{
@@ -58,4 +60,23 @@ a:hover{
 }
 .parts{
     font-size:25px;
+}
+
+
+.code {
+    background-color: #000c1f;
+    padding: 20px;
+    border: 1px solid #47352d;
+    border-radius: 5px;
+}
+
+pre {
+    white-space: pre-wrap;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+}
+
+code.python {
+    display: block;
+    padding: 10px;
 }
