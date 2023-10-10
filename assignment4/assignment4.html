@@ -173,24 +173,25 @@
             </main>
         </ul>
         <ul class="instructions">
-            Q2. This project needs two ESP32s. You need to work with a partner (classmate). Each ESP32 needs a
-            push button, LEDs, and a buzzer, (and other necessary electronic components). Design and construct a
-            circuit for each ESP32 so that the two ESP32s do serial communication using UARTs. When a
-            pushbutton is pressed from one ESP32 (A), the other ESP32 (B) responds by blinking LEDs and
-            playing some sound. When a pushbutton is pressed from the other ESP32 (B), ESP32 (A) responds by
-            blinking LEDs (a different pattern from the LEDS on ESP32 (B)) and playing some other sound. 
+            Q2. This project is about designing and constructing a circuit to help you wake up in the morning. Use a
+            LED, a NeoPixel module, a buzzer, a photoresistor, a button, and other necessary electronic
+            components. When it is dark, just the LED is lit (probably with dim light because you need to sleep
+            well). When it is bright, the NeoPixel module blinks all the LEDs fast at random, and the buzzer makes
+            loud and crazy sound until the button is pressed (when the button is pressed, all the LEDs stop
+            blinking, and the buzzer stops making any noise.)
         </ul>
         <ul class="parts">
             Parts: 
             <li>
-                <ol> - ESP32: 2</ol>
-                <ol> - Wires: 22</ol>
-                <ol> - 220 Ohm resistors: 2 </ol>
-                <ol> - 10K Ohm resistors: 4 </ol>
-                <ol> - 1K Ohm resistors: 2 </ol>
-                <ol> - Buttons: 2 </ol>
-                <ol> - LED: 2 </ol>
+                <ol> - Wires: 13</ol>
+                <ol> - 220 Ohm resistors: 1 </ol>
+                <ol> - 10K Ohm resistors: 3 </ol>
+                <ol> - 1K Ohm resistors: 1 </ol>
+                <ol> - Buttons: 1 </ol>
+                <ol> - LED: 1 </ol>
+                <ol> - NeoPixel LED: 1 </ol>
                 <ol> - NPN Transistor: 2 </ol>
+                <ol> - Active Buzzer: 1 </ol>
 
 
             </li>
@@ -198,7 +199,7 @@
         <ul class="image">
             <img style="height:300px; width:auto;" src="set2.png"> 
             <video width="auto" height="300px" controls> 
-                <source src="A3.2.mp4" type="video/mp4">
+                <source src="A4.2.mp4" type="video/mp4">
             </video>
         </ul>
         <ul class="image">
@@ -211,42 +212,67 @@
                     <h2></h2>
                     <pre>
                         <code class="python">
-                            from machine import UART
-                            from machine import Pin
-                            import time
-                            
-                            usart_flag=0
-                            
-                            led = Pin(4, Pin.OUT)
-                            button = Pin(13, Pin.IN,Pin.PULL_UP)
-                            activeBuzzer=Pin(12,Pin.OUT)
-                            activeBuzzer.value(0)
-                            led.value(0)
-                            
-                            myUsart = UART(1, baudrate=115200, bits=8, parity=0, rx=19, tx=34, timeout=10) 
-                            
-                            
+                        from machine import Pin,PWM,ADC
+                        import time
+                        from random import randint
+                        import neopixel
+
+                        pwm =PWM(Pin(25,Pin.OUT),1000)
+                        adc=ADC(Pin(36))
+                        adc.atten(ADC.ATTN_11DB)
+                        adc.width(ADC.WIDTH_10BIT)
+                        pin = Pin(19, Pin.OUT)
+                        np = neopixel.NeoPixel(pin, 8)
+                        buzzer=Pin(13,Pin.OUT)
+                        button = Pin(4, Pin.IN,Pin.PULL_UP)
+                        buzzer.value(0)
+                        pwm.duty(0)
+                        colors=[[randint(0,255),randint(0,255),randint(0,255)],[randint(0,255),randint(0,255),randint(0,255)],
+                                [randint(0,255),randint(0,255),randint(0,255)],[randint(0,255),randint(0,255),randint(0,255)],
+                                [randint(0,255),randint(0,255),randint(0,255)],[randint(0,255),randint(0,255),randint(0,255)]]
+                        colors1=[[0,0,0],[0,0,0],[0,0,0],
+                                [0,0,0],[0,0,0],[0,0,0]]  
+                        x=0
+
+                        try:
                             while True:
-                                if not button.value():
-                                    myUsart.write(str("A"))
-                                if myUsart.any():
-                                    #usart_buffer=myUsart.read()
-                                    usart_flag=1
-                                if usart_flag==1:
-                                    usart_flag=0
-                                    x=0
-                                    while x LESS THAN 6:
-                                        led.value(not led.value())
-                                        x=(x+1)
-                                        time.sleep_ms(500)
-                                    activeBuzzer.value(1)
-                                    time.sleep_ms(1000)
-                                    activeBuzzer.value(0)
-                                    print("hello")
-                            
-                                time.sleep_ms(100)
-                                
-                            
+                                print("X")
+                                adcValue=adc.read()
+                                pwm.duty(adcValue)
+                                print(adc.read())
+                                if adc.read()&lt;30:
+                                    
+                                buzzer.value(1)
+                                while x==0:
+                                    if not button.value():
+                                        x=x+1
+                                        
+                                                        
+                                    for i in range(0,6):
+                                        for j in range(0,8):
+                                            np[j]=colors[i]
+                                            np.write()
+                                            time.sleep_ms(50)
+                                        time.sleep_ms(50)
+                                x=x+1
+                                print(x)
+                                buzzer.value(0)
+                                adc.deinit()
+                                pwm.deinit()
+
+                        except:
+                        pwm.deinit()
+
+
+                        while True:
+                            for i in range(0,6):
+                                for j in range(0,8):
+                                    np[j]=colors1[i]
+                                    np.write()
+                                    time.sleep_ms(50)
+                                time.sleep_ms(50)
+                            time.sleep_ms(100)
+
                         </code>
                     </pre>
                 </section>
