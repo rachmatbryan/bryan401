@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bryan CMPT 401</title>
+    <link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+    
+    <header>
+        <h1><a href="../index.html"> Bryan CMPT 401 </h1></a>
+    </header>
+
+    <li>
+        <ul class="instructions">
+            Design and construct a circuit with a joystick, a buzzer, a 4-digit 7-segment display, a 74HC595, and
+            other necessary electronic components. At the beginning, there is no message on the 4-digit 7-segment
+            display. When you press the joystick down vertically (it is like a button), the 4-digit 7-segment display
+            shows a message. When you push the joystick to the right, the 4-digit 7-segment display shows the
+            message moving from the left to the right with some sound effects (s1) continually (going around).
+            When you push the joystick to the left, the same message crosses from the right to left over the display
+            with different sound effects (s2) continually (going around). When you push the joystick down, the
+            message scrolls down with sound effects (s3). When you push the joystick up, the message scrolls up
+            with sound effects (s4).
+        </ul>
+        <ul class="parts">
+            Parts: 
+            <li>
+                <ol> - Active Buzzer: 1 </ol>
+                <ol> - Wires </ol>
+                <ol> - 1K Ohm resistors: 1 </ol>
+                <ol> - 220 Ohm resistors: 8 </ol>
+                <ol> - NPN Transistor: 1 </ol>
+                <ol> - 4 7-Segment LED displays: 1 </ol>
+                <ol> - Joystick: 1 </ol>
+
+            </li>
+        </ul>
+        <ul class="image">
+            <img style="height:400px; width:auto;" src="set1.png"> 
+            <video width="auto" height="400px" controls> 
+                <source src="A5.1.mp4" type="video/mp4">
+            </video>
+        </ul>
+        <ul class="image">
+            <img style="height:500px; width:auto;" src="image1.jpg"> 
+        </ul>
+        <ul>
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            import time
+                            from my74HC595 import Chip74HC595
+                            from machine import Pin, ADC, PWM
+                            
+                            xVal=ADC(Pin(36))
+                            yVal=ADC(Pin(39))
+                            zVal=Pin(23,Pin.IN,Pin.PULL_UP)
+                            
+                            xVal.atten(ADC.ATTN_11DB)
+                            yVal.atten(ADC.ATTN_11DB)
+                            xVal.width(ADC.WIDTH_12BIT)
+                            yVal.width(ADC.WIDTH_12BIT)
+                            
+                            comPin=[25,26,27,14];
+                            num =[0xc0, 0xf9, 0xa4, 0xb0, 0x99, 0x92, 0x82, 0xf8,
+                                  0x80, 0x90, 0x88, 0x83, 0xc6, 0xa1, 0x86, 0x8e]
+                            nums=[20,34]
+                            state="none"
+                            
+                            activeBuzzer=Pin(21,Pin.OUT)
+                            buzzer = PWM(activeBuzzer)
+                            activeBuzzer.value(0)
+                            C  = 2093 # C
+                            D  = 2349 # D
+                            E  = 2637 # E
+                            F  = 2794 # F
+                            G  = 3136 # G
+                            A  = 3520 # A
+                            B = 3951 # B
+                            
+                            def led_displayRL():
+                                for i in range(3,-1,-1):
+                                    buzzer.freq(C)
+                                    buzzer.duty(50)
+                                    chns=Pin(comPin[i],Pin.OUT)
+                                    chip.shiftOut(0,num[1])
+                                    chns.value(1)
+                                    time.sleep_ms(200)
+                                    chns.value(0)
+                                    buzzer.duty(0)
+                            
+                            
+                            def led_displayLR():
+                                for i in range(0,4):
+                                    buzzer.freq(D)
+                                    buzzer.duty(50)
+                                    chns=Pin(comPin[i],Pin.OUT)
+                                    chip.shiftOut(0,num[1])
+                                    chns.value(1)
+                                    time.sleep_ms(200)
+                                    chns.value(0)
+                                    buzzer.duty(0)
+                            
+                            def led_displayUD():
+                                for i in range(3,-1,-1):
+                                    buzzer.freq(F)
+                                    buzzer.duty(50)
+                                    chns=Pin(comPin[i],Pin.OUT)
+                                    chip.shiftOut(0,nums[0])
+                                    chns.value(1)
+                                    time.sleep_ms(200)
+                                    chns.value(0)
+                                    buzzer.duty(0)
+                                for i in range(3,-1,-1):
+                                    buzzer.freq(F)
+                                    buzzer.duty(50)
+                                    chns=Pin(comPin[i],Pin.OUT)
+                                    chip.shiftOut(0,nums[1])
+                                    chns.value(1)
+                                    time.sleep_ms(200)
+                                    chns.value(0)
+                                    buzzer.duty(0)
+                            
+                            def led_displayDU():
+                                for i in range(0,4):
+                                    buzzer.freq(F)
+                                    buzzer.duty(50)
+                                    chns=Pin(comPin[i],Pin.OUT)
+                                    chip.shiftOut(0,nums[1])
+                                    chns.value(1)
+                                    time.sleep_ms(200)
+                                    chns.value(0)
+                                    buzzer.duty(0)
+                                for i in range(0,4):
+                                    buzzer.freq(F)
+                                    buzzer.duty(50)
+                                    chns=Pin(comPin[i],Pin.OUT)
+                                    chip.shiftOut(0,nums[0])
+                                    chns.value(1)
+                                    time.sleep_ms(200)
+                                    chns.value(0)
+                                    buzzer.duty(0)
+                            #Pin(15)-74hc595.ds, Pin(2)-74hc595.st_cp, Pin(4)-74hc595.sh_cp
+                            chip = Chip74HC595(15,2,4)
+                            try:
+                                while True:
+                                    print("X,Y,Z:",xVal.read(),",",yVal.read(),",",zVal.value())
+                                    print(state)
+                                    if state=="none":
+                                        if xVal.read()>3800 and yVal.read()>1800:
+                                            state="RL"
+                                        if xVal.read()&lt;200 and yVal.read()>1800:
+                                            state="LR"
+                                        if xVal.read()>1800 and yVal.read()&lt;200:
+                                            state="DU"
+                                        if xVal.read()&lt;1800 and yVal.read()>3800:
+                                            state="UD"
+                                    elif state=="RL":
+                                        led_displayRL()
+                                        if xVal.read()>3800 and yVal.read()>1800:
+                                            state="RL"
+                                        if xVal.read()&lt;200 and yVal.read()>1800:
+                                            state="LR"
+                                        if xVal.read()>1800 and yVal.read()&lt;200:
+                                            state="DU"
+                                        if xVal.read()>1800 and yVal.read()>3800:
+                                            state="UD"
+                                    elif state=="LR":
+                                        led_displayLR()
+                                        if xVal.read()>3800 and yVal.read()>1800:
+                                            state="RL"
+                                        if xVal.read()&lt;200 and yVal.read()>1800:
+                                            state="LR"
+                                        if xVal.read()>1800 and yVal.read()&lt;200:
+                                            state="DU"
+                                        if xVal.read()>1800 and yVal.read()>3800:
+                                            state="UD"
+                                    elif state=="UD":
+                                        led_displayUD()
+                                        if xVal.read()>3800 and yVal.read()>1800:
+                                            state="RL"
+                                        if xVal.read()&lt;200 and yVal.read()>1800:
+                                            state="LR"
+                                        if xVal.read()>1800 and yVal.read()&lt;200:
+                                            state="DU"
+                                        if xVal.read()>1800 and yVal.read()>3800:
+                                            state="UD"
+                                    elif state=="DU":
+                                        led_displayDU()
+                                        if xVal.read()>3800 and yVal.read()>1800:
+                                            state="RL"
+                                        if xVal.read()&lt;200 and yVal.read()>1800:
+                                            state="LR"
+                                        if xVal.read()>1800 and yVal.read()&lt;200:
+                                            state="DU"
+                                        if xVal.read()>1800 and yVal.read()>3800:
+                                            state="UD"
+                                        
+                                        
+                            except:
+                                pass
+                            
+                         
+                        </code>
+                    </pre>
+                </section>
+            </main>
+        </ul>
+        
+    </li>
+    
+</body>
+</html>
