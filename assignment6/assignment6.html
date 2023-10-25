@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bryan CMPT 401</title>
+    <link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+    
+    <header>
+        <h1><a href="../index.html"> Bryan CMPT 401 - 25 October 2023</h1></a>
+    </header>
+
+    <li>
+        <ul class="instructions">
+            Design and construct a circuit with a servo or stepper motor, a buzzer, a photoresistor, an LED, and
+            other necessary electronic components. Attach a hand shape made from paper to the motor. When the
+            room is bright, the circuit does nothing. But when the room becomes dark (or you cover the
+            photoresistor with your hand), the circuit waves the hand, makes the LED blink, and plays a sad song
+            (a good-bye song), similar to this (https://makeabilitylab.github.io/physcomp/) but using a
+            photoresistor instead of computer vision.
+        </ul>
+        <ul class="parts">
+            Parts: 
+            <li>
+                <ol> - Active Buzzer: 1 </ol>
+                <ol> - Wires: 11 </ol>
+                <ol> - 1K Ohm resistors: 1 </ol>
+                <ol> - 10K Ohm resistors: 2 </ol>
+                <ol> - NPN Transistor: 1 </ol>
+                <ol> - LED: 1 </ol>
+                <ol> - Servo Motor: 1 </ol>
+                <ol> - Photoresistor: 1 </ol>
+
+            </li>
+        </ul>
+        <ul class="image">
+            <img style="height:350px; width:auto;" src="set1.png"> 
+            <video width="auto" height="350px" controls> 
+                <source src="A6.1.mp4" type="video/mp4">
+            </video>
+        </ul>
+        <ul class="image">
+            <img style="height:500px; width:auto;" src="image1.jpg"> 
+        </ul>
+        <ul>
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            C4  = 262  # C
+                            CS4 = 277  # C#/Db
+                            D4  = 294  # D
+                            DS4 = 311  # D#/Eb
+                            E4  = 330  # E
+                            F4  = 349  # F
+                            FS4 = 370  # F#/Gb
+                            G4  = 392  # G
+                            GS4 = 415  # G#/Ab
+                            A4  = 440  # A
+                            AS4 = 466  # A#/Bb
+                            B4  = 494  # B
+                            
+                            from machine import Pin,PWM,ADC
+                            from machine import Pin
+                            from machine import PWM
+                            from myservo import myServo
+                            import machine
+                            import time
+                            import _thread
+                            
+                                
+                            twinkle = [
+                                C4, C4, G4, G4, A4, A4, G4, 0,
+                                F4, F4, E4, E4, D4, D4, C4, 0,
+                                G4, G4, F4, F4, E4, E4, D4, 0,
+                                G4, G4, F4, F4, E4, E4, D4, 0,
+                                C4, C4, G4, G4, A4, A4, G4, 0,
+                                F4, F4, E4, E4, D4, D4, C4, 0,
+                            ]
+                            
+                            servo=myServo(15)#set servo pin
+                            servo.myServoWriteAngle(0)#Set Servo Angle
+                            pwm =PWM(Pin(19,Pin.OUT),1000)
+                            adc=ADC(Pin(36))
+                            adc.atten(ADC.ATTN_11DB)
+                            adc.width(ADC.WIDTH_10BIT)
+                            buzzer1 = Pin(0, Pin.OUT)
+                            
+                            def play(pin, melodies, delays, duty):
+                                pwm = machine.PWM(pin)
+                                for note in melodies:
+                                    if note!=0:
+                                        pwm.freq(note)
+                                    print(note)
+                                    pwm.duty(duty)
+                                    time.sleep_ms(delays)
+                                pwm.duty(0)
+                                pwm.deinit()
+                                
+                            try:
+                                while True:
+                                    adcValue=adc.read()
+                                    pwm.duty(0)
+                                    time.sleep_ms(200)
+                                    if adcValue>500:
+                                        _thread.start_new_thread(play,(buzzer1, twinkle, 500, 50))
+                                        for i in range(0,4):
+                                            for i in range(0,180,4):
+                                                servo.myServoWriteAngle(i)
+                                                pwm.duty(adcValue)
+                                                time.sleep_ms(30)
+                                                pwm.duty(0)
+                                                time.sleep_ms(30)
+                                            for i in range(180,0,-4):
+                                                servo.myServoWriteAngle(i)
+                                                pwm.duty(adcValue)
+                                                time.sleep_ms(30)
+                                                pwm.duty(0)
+                                                time.sleep_ms(30)
+                                    else:
+                                        pwm.duty(0)
+                                    print(adc.read())
+                                    time.sleep_ms(100)
+                            except:
+                                pwm.deinit()
+                            
+                        
+                        </code>
+                    </pre>
+                </section>
+            </main>
+        </ul>
+        <ul class="instructions">
+            Design and construct a circuit that spins a fan blade with some message on an LCD display when the
+            temperature is high enough using a DC motor, an LCD 1602, a thermistor, and other necessary
+            electronic components. Attach a fan blade made from paper to the DC motor. When the temperature
+            reaches the threshold temperature (you can do this using your hand or a hair dryer with hot air), the fan
+            starts to spin with the message on the LCD display such as “Cool yourself down.” When the
+            temperature is below the threshold temperature, the LCD display shows some other message such as
+            “Good temperature.”
+        </ul>
+        <ul class="parts">
+            Parts: 
+            <li>
+                <ol> - Wires: 16</ol>
+                <ol> - 220 Ohm resistors: 1 </ol>
+                <ol> - 10K Ohm resistors: 1 </ol>
+                <ol> - 1K Ohm resistors: 1 </ol>
+                <ol> - LCD1602: 1 </ol>
+                <ol> - DC Motor: 1 </ol>
+                <ol> - NPN Transistor: 2 </ol>
+                <ol> - Thermistor: 1 </ol>
+                <ol> - Relay: 1 </ol>
+
+
+            </li>
+        </ul>
+        <ul class="image">
+            <img style="height:400px; width:auto;" src="set2.png"> 
+            <video width="auto" height="400px" controls> 
+                <source src="A6.2.mp4" type="video/mp4">
+            </video>
+        </ul>
+        <ul class="image">
+            <img style="height:400px; width:auto;" src="image2.jpg"> 
+        </ul>
+        <ul>
+            
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            from machine import Pin,ADC
+                            import time
+                            import math
+                            from machine import I2C, Pin
+                            from I2C_LCD import I2cLcd
+                                                    
+                            adc=ADC(Pin(36))
+                            adc.atten(ADC.ATTN_11DB)
+                            adc.width(ADC.WIDTH_12BIT)
+                            i2c = I2C(scl=Pin(14), sda=Pin(12), freq=400000)
+                            devices = i2c.scan()
+                            relay = Pin(33, Pin.OUT)
+                            
+                            def reverseRelay():
+                                if relay.value():
+                                    relay.value(0)
+                                else:
+                                    relay.value(1)
+                                    
+                            if len(devices) == 0:
+                                print("No i2c device !")
+                            else:
+                                for device in devices:
+                                    print("I2C addr: "+hex(device))
+                                    lcd = I2cLcd(i2c, device, 2, 16)
+                            
+                            try:
+                                while True:
+                                    adcValue=adc.read()
+                                    voltage=adcValue/4095*3.3
+                                    Rt=10*voltage/(3.3-voltage)
+                                    tempK=(1/(1/(273.15+25)+(math.log(Rt/10))/3950))
+                                    temp=tempK-273.15
+                                    print("ADC value:",adcValue,"\tVoltage :",voltage,"\tTemperature :",temp);
+                                    if temp>31:
+                                        lcd.move_to(0, 0)
+                                        relay.value(1)
+                                        lcd.clear()
+                                        time.sleep_ms(100)
+                                        lcd.putstr("Cool down ! ")
+                                    else:
+                                        lcd.move_to(0, 0)
+                                        lcd.clear()
+                                        lcd.putstr("Good Temperature")
+                                        relay.value(0)
+                                        
+                                    time.sleep_ms(1000)
+                            except:
+                                pass
+                            
+                        </code>
+                    </pre>
+                </section>
+            </main>
+                    
+        </ul>
+    </li>
+    
+</body>
+</html>
