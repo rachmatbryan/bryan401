@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bryan CMPT 401</title>
+    <link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+    
+    <header>
+        <h1><a href="../index.html"> Bryan CMPT 401 - 25 October 2023</h1></a>
+    </header>
+
+    <li>
+        <ul class="instructions">
+            Design and construct a circuit with an ultrasonic ranging module (HC-SR04), a buzzer, an LED bar (or
+            multiple LEDs), and other necessary electronic components. When an object gets close to the HCSR04, the circuit increases the number of lit LEDs and plays higher tones (i.e., (low) Do-Re-Mi-Fa-SoLa-Ti-Do (high)). When an object goes away from the HC-SR04, the circuit decreases the number of
+            lit LEDs and plays lower tones.Capture your settings and working circuit in photos and videos (the videos should include sound).
+        </ul>
+        <ul class="parts">
+            Parts: 
+            <li>
+                <ol> - Active Buzzer: 1 </ol>
+                <ol> - Wires: 15 </ol>
+                <ol> - 1K Ohm resistors: 1 </ol>
+                <ol> - 220 Ohm resistors: 8 </ol>
+                <ol> - NPN Transistor: 1 </ol>
+                <ol> - LED Bar: 1 </ol>
+                <ol> - Ultrasonic Sensor: 1 </ol>
+            </li>
+        </ul>
+        <ul class="image">
+            <img style="height:350px; width:auto;" src="set1.png"> 
+            <video width="auto" height="350px" controls> 
+                <source src="A7.1.mp4" type="video/mp4">
+            </video>
+        </ul>
+        <ul class="image">
+            <img style="height:500px; width:auto;" src="image1.jpg"> 
+        </ul>
+        <ul>
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            from machine import Pin,PWM,ADC
+                            import time
+                            
+                            
+                            activeBuzzer=Pin(32,Pin.OUT)
+                            pwm =PWM(activeBuzzer)
+                            pins=[15,2,0,4,5,18,19,21]
+                            pwm =PWM(Pin(32),10000)
+                            activeBuzzer.value(0)
+                            led1=Pin(15,Pin.OUT)
+                            led2=Pin(2,Pin.OUT)
+                            led3=Pin(0,Pin.OUT)
+                            led4=Pin(4,Pin.OUT)
+                            led5=Pin(5,Pin.OUT)
+                            led6=Pin(18,Pin.OUT)
+                            led7=Pin(19,Pin.OUT)
+                            led8=Pin(21,Pin.OUT)
+                            
+                            leds=[led1,led2,led3,led4,led5,led6,led7,led8]
+                            trigPin=Pin(13,Pin.OUT,0)
+                            echoPin=Pin(14,Pin.IN,0)
+                            
+                            soundVelocity=340
+                            distance=0
+                            
+                            def getSonar():
+                                trigPin.value(1)
+                                time.sleep_us(10)
+                                trigPin.value(0)
+                                while not echoPin.value():
+                                    pass
+                                pingStart=time.ticks_us()
+                                while echoPin.value():
+                                    pass
+                                pingStop=time.ticks_us()
+                                pingTime=time.ticks_diff(pingStop,pingStart)
+                                distance=pingTime*soundVelocity//2//10000
+                                return int(distance)
+                            
+                            try:
+                                while True:
+                                    sonarValue=getSonar()
+                                    print(sonarValue)
+                                    time.sleep_ms(100)
+                                    if sonarValue>50:
+                                        for i in range(0,7):
+                                            leds[i].value(0)
+                                        pwm.freq(100)
+                                        pwm.duty(10)
+                                        time.sleep_ms(100)
+                                        pwm.duty(0)   
+                                    elif sonarValue>45 and sonarValue&lt;50:
+                                        for i in range(0,1):
+                                            leds[0].value(1)
+                                        for i in range(1,7):
+                                            leds[i].value(0)
+                                        pwm.freq(200)
+                                        pwm.duty(52)
+                                        time.sleep_ms(100)
+                                        pwm.duty(0)
+                                    elif sonarValue>40 and sonarValue&lt;45:
+                                        for i in range(0,1):
+                                            leds[i].value(1)
+                                        for i in range(2,7):
+                                            leds[i].value(0)
+                                        pwm.freq(300)
+                                        pwm.duty(52)
+                                        time.sleep_ms(100)
+                                        pwm.duty(0)
+                                    elif sonarValue>35 and sonarValue&lt;40:
+                                        for i in range(0,2):
+                                            leds[i].value(1)
+                                        for i in range(3,7):
+                                            leds[i].value(0)
+                                        pwm.freq(400)
+                                        pwm.duty(52)
+                                        time.sleep_ms(100)
+                                        pwm.duty(0)
+                                    elif sonarValue>30 and sonarValue&lt;35:
+                                        for i in range(0,3):
+                                            leds[i].value(1)
+                                        for i in range(4,7):
+                                            leds[i].value(0)
+                                        pwm.freq(500)
+                                        pwm.duty(52)
+                                        time.sleep_ms(100)
+                                        pwm.duty(0)
+                                    elif sonarValue>25 and sonarValue&lt;30:
+                                        for i in range(0,4):
+                                            leds[i].value(1)
+                                        for i in range(5,7):
+                                            leds[i].value(0)
+                                        pwm.freq(600)
+                                        pwm.duty(52)
+                                        time.sleep_ms(100)
+                                        pwm.duty(0)
+                                    elif sonarValue>20 and sonarValue&lt;25:
+                                        for i in range(0,5):
+                                            leds[i].value(1)
+                                        for i in range(6,7):
+                                            leds[i].value(0)
+                                        pwm.freq(700)
+                                        pwm.duty(52)
+                                        time.sleep_ms(100)
+                                        pwm.duty(0)
+                                    elif sonarValue>15 and sonarValue&lt;20:
+                                        for i in range(0,6):
+                                            leds[i].value(1)
+                                        for i in range(1,7):
+                                            leds[7].value(0)
+                                        pwm.freq(800)
+                                        pwm.duty(52)
+                                        time.sleep_ms(100)
+                                        pwm.duty(0)
+                                    elif sonarValue>10 and sonarValue&lt;15:
+                                        for i in range(0,7):
+                                            leds[i].value(1)
+                                        pwm.freq(900)
+                                        pwm.duty(52)
+                                        time.sleep_ms(100)
+                                        pwm.duty(0)
+                                    elif sonarValue>5 and sonarValue&lt;10:
+                                        for i in range(0,7):
+                                            leds[i].value(1)
+                                        pwm.freq(900)
+                                        pwm.duty(52)
+                                        time.sleep_ms(100)
+                                        pwm.duty(0)
+                                    time.sleep_ms(100)
+                            except:
+                                pass
+                        
+                        </code>
+                    </pre>
+                </section>
+            </main>
+        </ul>
+        <ul class="instructions">
+            Design and construct a circuit with an infrared remote, a buzzer, a motor (DC motor, servo motor, or
+            stepper motor), a NeoPixel, and an LCD1602. By pressing various buttons on the infrared remote, their
+            corresponding electronic components respond with some sound, spinning, light LEDs, or a message on
+            the display. Capture your settings and working circuit in photos and videos (the videos should include
+            sound).
+        </ul>
+        <ul class="parts">
+            Parts: 
+            <li>
+                <ol> - Wires: 12</ol>
+                <ol> - 220 Ohm resistors: 1 </ol>
+                <ol> - 1K Ohm resistors: 1 </ol>
+                <ol> - LCD1602: 1 </ol>
+                <ol> - Active Buzzer: 1 </ol>
+                <ol> - NPN Transistor: 2 </ol>
+                <ol> - Infra-red sensor: 1 </ol>
+                <ol> - Neo-pixel: 1 </ol>
+
+
+            </li>
+        </ul>
+        <ul class="image">
+            <img style="height:400px; width:auto;" src="set2.png"> 
+            <video width="auto" height="400px" controls> 
+                <source src="A7.2.mp4" type="video/mp4">
+            </video>
+        </ul>
+        <ul class="image">
+            <img style="height:400px; width:auto;" src="image2.jpg"> 
+        </ul>
+        <ul>
+            
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            from irrecvdata import irGetCMD
+                            from machine import I2C, Pin, PWM
+                            from I2C_LCD import I2cLcd
+                            from myservo import myServo
+                            from random import randint
+                            import time
+                            import neopixel
+
+                            i2c = I2C(scl=Pin(14), sda=Pin(12), freq=400000)
+                            devices = i2c.scan()
+                            if len(devices) == 0:
+                                print("No i2c device !")
+                            else:
+                                for device in devices:
+                                    print("I2C addr: "+hex(device))
+                                    lcd = I2cLcd(i2c, device, 2, 16)
+                            recvPin = irGetCMD(4)
+                            servo=myServo(33)#set servo pin
+                            servo.myServoWriteAngle(0)#Set Servo Angle
+                            activeBuzzer=Pin(26,Pin.OUT)
+                            pwm =PWM(Pin(26),10000)
+                            time.sleep_ms(1000)
+                            pin = Pin(2, Pin.OUT)
+                            np = neopixel.NeoPixel(pin, 8)
+                            brightness=10
+                            colors=[[brightness,0,0], #red
+                                    [0,brightness,0], #green
+                                    [0,0,brightness], #blue
+                                    [brightness,brightness,brightness], #white
+                                    [0,0,0]] #close
+
+                            try:
+                                while True:
+                                    time.sleep_ms(1000)
+                                    irValue = recvPin.ir_read()
+                                    if irValue == "0xff30cf":
+                                        lcd.clear()
+                                        lcd.move_to(0, 0)
+                                        lcd.putstr("Remote: 1")
+                                        lcd.move_to(0, 1)
+                                        lcd.putstr("Device: Servo")
+                                        time.sleep_ms(1000)
+                                        for i in range(0,180,1):
+                                            servo.myServoWriteAngle(i)
+                                            time.sleep_ms(15)
+                                        for i in range(180,0,-1):
+                                            servo.myServoWriteAngle(i)
+                                            time.sleep_ms(15) 
+                                    elif irValue == "0xff18e7":
+                                        lcd.clear()
+                                        lcd.move_to(0, 0)
+                                        lcd.putstr("Remote: 2")
+                                        lcd.move_to(0, 1)
+                                        lcd.putstr("Device: Buzzer")
+                                        activeBuzzer.value(1)
+                                        time.sleep_ms(2000)
+                                        activeBuzzer.value(0)
+                                    elif irValue == "0xff7a85":
+                                        lcd.clear()
+                                        lcd.move_to(0, 0)
+                                        lcd.putstr("Remote: 3")
+                                        lcd.move_to(0, 1)
+                                        lcd.putstr("Device: NeoPixel")
+                                        for i in range(0,5):
+                                            for j in range(0,8):
+                                                np[j]=colors[i]
+                                                np.write()
+                                                time.sleep_ms(50)
+                                            time.sleep_ms(500)
+                                        time.sleep_ms(500)
+                            except:
+                                pass
+
+                            
+                        </code>
+                    </pre>
+                </section>
+            </main>
+                    
+        </ul>
+    </li>
+    
+</body>
+</html>
