@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bryan CMPT 401</title>
+    <link rel="stylesheet" type="text/css" href="../style.css">
+</head>
+<body>
+    
+    <header>
+        <h1><a href="../index.html"> Bryan CMPT 401 - 25 October 2023</h1></a>
+    </header>
+
+    <li>
+        <ul class="instructions">
+            Design and construct a burglar alarm system with an HC SR501 PIR sensor, a buzzer, an RGB LED, a
+            servo or stepper motor, and other necessary electronic components. Attach a paper hand to the motor.
+            When no one is around the HC SR501 sensor, the RGB LED shows a dim light with a calming colour
+            (like a night light). But when a burglar approaches the PIR sensor, the buzzer makes a siren alarm
+            sound effect, the RGB LED flashes rapidly with changing random colours, and the paper hand waves
+            rapidly.
+        </ul>
+        <ul class="parts">
+            Parts: 
+            <li>
+                <ol> - Active Buzzer: 1 </ol>
+                <ol> - Wires: 17 </ol>
+                <ol> - 1K Ohm resistors: 1 </ol>
+                <ol> - 220 Ohm resistors: 3 </ol>
+                <ol> - NPN Transistor: 1 </ol>
+                <ol> - LED RGB: 1 </ol>
+                <ol> - Infrared Senssor HCCSR501: 1</ol>
+                <ol> - Servo Motor: 1</ol>
+            </li>
+        </ul>
+        <ul class="image">
+            <img style="height:350px; width:auto;" src="set1.png"> 
+            <video width="auto" height="350px" controls> 
+                <source src="A8.1.mp4" type="video/mp4">
+            </video>
+        </ul>
+        <ul class="image">
+            <img style="height:500px; width:auto;" src="image1.jpg"> 
+        </ul>
+        <ul>
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            import time
+                            from machine import Pin,PWM
+                            from random import randint
+                            from myservo import myServo
+                            
+                            
+                            activeBuzzer=Pin(13,Pin.OUT)
+                            sensorPin=Pin(14,Pin.IN)
+                            pins=[2,0,4]
+                            pwm=PWM(activeBuzzer)
+                            pwm0=PWM(Pin(pins[0]),10000)
+                            pwm1=PWM(Pin(pins[1]),10000)
+                            pwm2=PWM(Pin(pins[2]),10000)
+                            servo=myServo(15)#set servo pin
+                            servo.myServoWriteAngle(0)#Set Servo Angle
+                            time.sleep_ms(1000)
+                            
+                            def setColor(r,g,b):
+                                pwm0.duty(1023-r)
+                                pwm1.duty(1023-g)
+                                pwm2.duty(1023-b)
+                            try:
+                                while True:
+                                  if not sensorPin.value():
+                                    print("xd")#IF There is nothing 
+                                    activeBuzzer.value(0)
+                                    setColor(2,2,100)
+                                  else:#IF there is something
+                                    print("ddx")
+                                    activeBuzzer.value(1)
+                                    for i in range(0,180,1):
+                                        red   = randint(0,255)
+                                        green = randint(0,255)
+                                        blue  = randint(0,255)
+                                        setColor(red,green,blue)
+                                        servo.myServoWriteAngle(i)
+                                        time.sleep_ms(15)
+                                    for i in range(180,0,-1):
+                                        red   = randint(0,255)
+                                        green = randint(0,1023)
+                                        blue  = randint(0,1023)
+                                        setColor(red,green,blue)
+                                        servo.myServoWriteAngle(i)
+                                        time.sleep_ms(15)
+                                    time.sleep_ms(200)  
+                            
+                                      
+                                    
+                            except:
+                                pass
+                                
+                        
+                        </code>
+                    </pre>
+                </section>
+            </main>
+        </ul>
+        <ul class="instructions">
+            Design and construct a circuit with an MPU6050, a buzzer, an LCD1602, and other necessary
+            electronic components. This circuit is to help an older adult detect his/her balance and mobility.
+            Assume that this circuit is attached to the user. When the user suddenly falls down forward, backward,
+            to the left, or right, the circuit makes a distinctive sound effect for each direction, and the LCD1602
+            displays the appropriate message such as “You fell down forward” or “You fell down to the left.”
+        </ul>
+        <ul class="parts">
+            Parts: 
+            <li>
+                <ol> - Wires: 11</ol>
+                <ol> - 1K Ohm resistors: 1 </ol>
+                <ol> - LCD1602: 1 </ol>
+                <ol> - Active Buzzer: 1 </ol>
+                <ol> - NPN Transistor: 2 </ol>
+                <ol> - Accelorometer MPU6050: 1 </ol>
+
+
+            </li>
+        </ul>
+        <ul class="image">
+            <img style="height:400px; width:auto;" src="set2.png"> 
+            <video width="auto" height="400px" controls> 
+                <source src="A8.2.mp4" type="video/mp4">
+            </video>
+        </ul>
+        <ul class="image">
+            <img style="height:400px; width:auto;" src="image2.jpg"> 
+        </ul>
+        <ul>
+            
+            <main>
+                <section class="code">
+                    <h2></h2>
+                    <pre>
+                        <code class="python">
+                            from mpu6050 import MPU6050
+                            import time
+                            from I2C_LCD import I2cLcd
+                            from machine import I2C, Pin
+                            
+                            i2c = I2C(scl=Pin(32), sda=Pin(33), freq=400000)
+                            devices = i2c.scan()
+                            if len(devices) == 0:
+                                print("No i2c device !")
+                            else:
+                                for device in devices:
+                                    print("I2C addr: "+hex(device))
+                                    lcd = I2cLcd(i2c, device, 2, 16) 
+                            mpu=MPU6050(14,13) #attach the IIC pin(sclpin,sdapin)
+                            mpu.MPU_Init()     #initialize the MPU6050
+                            G = 9.8
+                            time.sleep_ms(1000)#waiting for MPU6050 to work steadily
+                            lcd.clear()
+                            try:
+                                while True:
+                                    
+                                    gyro=mpu.MPU_Get_Gyroscope()     #gain the values of Gyroscope
+                                    if (gyro[1]/131)>3:
+                                        lcd.move_to(0, 0)
+                                        lcd.clear()
+                                        lcd.putstr("Right")
+                                    elif (gyro[1]/131)&lt;-2:
+                                        lcd.move_to(0, 0)
+                                        lcd.clear()
+                                        lcd.putstr("Left")
+                                    elif gyro[0]/131&lt;-3:
+                                        lcd.move_to(0, 0)
+                                        lcd.clear()
+                                        lcd.putstr("Forward")
+                                    elif gyro[0]/131>3:
+                                        lcd.move_to(0, 0)
+                                        lcd.clear()
+                                        lcd.putstr("Backward")   
+                                    print(gyro[0]/131,"d/s",gyro[1]/131,"d/s",gyro[2]/131,"d/s")
+                                    time.sleep_ms(2000)
+                            except:
+                                pass
+
+                            
+                        </code>
+                    </pre>
+                </section>
+            </main>
+                    
+        </ul>
+    </li>
+    
+</body>
+</html>
